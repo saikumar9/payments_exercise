@@ -6,6 +6,16 @@ RSpec.describe LoansController, type: :controller do
       get :index
       expect(response).to have_http_status(:ok)
     end
+
+    context 'with loan' do
+      let!(:loan) { Loan.create!(funded_amount: 2000.0) }
+
+      it 'responds with a 200 and valid JSON' do
+        get :index
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to be_truthy
+      end
+    end
   end
 
   describe '#show' do
@@ -14,6 +24,7 @@ RSpec.describe LoansController, type: :controller do
     it 'responds with a 200' do
       get :show, params: { id: loan.id }
       expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)).to be_truthy
     end
 
     context 'if the loan is not found' do
